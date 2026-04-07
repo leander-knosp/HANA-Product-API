@@ -1,0 +1,12 @@
+{
+  "name": "hana-connection-cli",
+  "version": "1.0.0",
+  "description": "CLI tool to test S/4HANA API connection",
+  "type": "module",
+  "scripts": {
+    "test-connection": "node test-connection.js"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.5"
+  }
+}
