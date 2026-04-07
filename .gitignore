@@ -3,3 +3,4 @@
 node_modules
 dist
 webapp/.env*
+backend/node_modules
