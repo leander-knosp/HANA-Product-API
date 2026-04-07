@@ -5,6 +5,8 @@ import {
   MessageStrip,
   Toolbar,
   ToolbarSpacer,
+  ToolbarSelect,
+  ToolbarSelectOption,
   Input,
   Title,
   FlexBox,
@@ -112,7 +114,7 @@ function ProductCardGrid({ products }) {
   );
 }
 
-export default function ProductList({ products, loading, error }) {
+export default function ProductList({ products, loading, error, pageSize, onPageSizeChange }) {
   const [search, setSearch] = useState('');
   const [view, setView] = useState('table');
 
@@ -160,6 +162,19 @@ export default function ProductList({ products, loading, error }) {
           onInput={(e) => setSearch(e.target.value)}
           style={{ width: '300px', marginRight: '0.75rem' }}
         />
+        <ToolbarSelect
+          onChange={(e) => {
+            const text = e.detail.selectedOption?.textContent?.trim();
+            onPageSizeChange(text === 'All' ? 'all' : Number(text));
+          }}
+          style={{ marginRight: '0.75rem' }}
+        >
+          {[200, 500, 1000, 'all'].map((v) => (
+            <ToolbarSelectOption key={v} selected={pageSize === v}>
+              {v === 'all' ? 'All' : v}
+            </ToolbarSelectOption>
+          ))}
+        </ToolbarSelect>
         <SegmentedButton
           onSelectionChange={(e) => {
             const text = e.detail.selectedItems?.[0]?.textContent?.trim().toLowerCase();

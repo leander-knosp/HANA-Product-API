@@ -7,9 +7,12 @@ export default function App() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [pageSize, setPageSize] = useState(200);
 
   useEffect(() => {
-    getProducts()
+    setLoading(true);
+    setError(null);
+    getProducts({ $top: pageSize === 'all' ? 9999 : pageSize })
       .then((data) => {
         setProducts(data);
         setLoading(false);
@@ -18,7 +21,7 @@ export default function App() {
         setError(err?.response?.data?.error?.message?.value ?? err.message);
         setLoading(false);
       });
-  }, []);
+  }, [pageSize]);
 
   const total = products.length;
   const active = products.filter((p) => !p.IsMarkedForDeletion || p.IsMarkedForDeletion === 'false').length;
@@ -50,7 +53,13 @@ export default function App() {
       </div>
 
       <div style={{ padding: '1.5rem 2rem', flex: 1 }}>
-        <ProductList products={products} loading={loading} error={error} />
+        <ProductList
+          products={products}
+          loading={loading}
+          error={error}
+          pageSize={pageSize}
+          onPageSizeChange={setPageSize}
+        />
       </div>
     </FlexBox>
   );
