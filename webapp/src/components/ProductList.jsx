@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useMemo } from 'react';
 import {
   AnalyticalTable,
   BusyIndicator,
@@ -15,7 +15,6 @@ import {
   SegmentedButtonItem,
   Label,
 } from '@ui5/webcomponents-react';
-import { getProducts } from '../api/products.js';
 
 const COLUMNS = [
   { Header: 'Product', accessor: 'Product', minWidth: 150 },
@@ -113,24 +112,9 @@ function ProductCardGrid({ products }) {
   );
 }
 
-export default function ProductList() {
-  const [products, setProducts] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+export default function ProductList({ products, loading, error }) {
   const [search, setSearch] = useState('');
   const [view, setView] = useState('table');
-
-  useEffect(() => {
-    getProducts()
-      .then((data) => {
-        setProducts(data);
-        setLoading(false);
-      })
-      .catch((err) => {
-        setError(err?.response?.data?.error?.message?.value ?? err.message);
-        setLoading(false);
-      });
-  }, []);
 
   const filtered = useMemo(() => {
     if (!search.trim()) return products;
@@ -177,14 +161,13 @@ export default function ProductList() {
           style={{ width: '300px', marginRight: '0.75rem' }}
         />
         <SegmentedButton
-          onSelectionChange={(e) => setView(e.detail.selectedItem.dataset.key)}
+          onSelectionChange={(e) => {
+            const text = e.detail.selectedItems?.[0]?.textContent?.trim().toLowerCase();
+            if (text === 'table' || text === 'cards') setView(text);
+          }}
         >
-          <SegmentedButtonItem selected={view === 'table'} data-key="table">
-            Table
-          </SegmentedButtonItem>
-          <SegmentedButtonItem selected={view === 'cards'} data-key="cards">
-            Cards
-          </SegmentedButtonItem>
+          <SegmentedButtonItem selected={view === 'table'}>Table</SegmentedButtonItem>
+          <SegmentedButtonItem selected={view === 'cards'}>Cards</SegmentedButtonItem>
         </SegmentedButton>
       </Toolbar>
 
